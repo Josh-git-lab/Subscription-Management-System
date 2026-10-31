@@ -11,9 +11,9 @@ export const metadata: Metadata = {
 
 export default function LoginPage() {
   return (
-    <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center gap-6 px-4 py-12">
+    <main className="rf-env-wash-flat mx-auto flex w-full max-w-md flex-1 flex-col justify-center gap-6 px-4 py-12">
       <div className="space-y-2 text-center sm:text-left">
-        <h1 className="text-3xl font-semibold tracking-tight">Log in</h1>
+        <h1 className="rf-type-h2">Log in</h1>
         <p className="text-muted-foreground text-sm">
           Customers go to plans after sign-in. Staff and admins go to the
           operations dashboard.

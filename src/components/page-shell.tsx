@@ -25,16 +25,16 @@ export function PageShell({
   return (
     <main
       className={cn(
-        "mx-auto flex w-full flex-1 flex-col gap-8 py-6 sm:py-8",
+        "rf-env-wash-flat mx-auto flex w-full flex-1 flex-col gap-8 py-6 sm:py-8",
         width !== "full" && "px-4 sm:px-6",
         widthClass[width],
       )}
     >
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="space-y-2">
-          <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
+          <h1 className="rf-type-h1 text-balance">{title}</h1>
           {description ? (
-            <p className="text-muted-foreground max-w-2xl text-base">
+            <p className="text-muted-foreground rf-type-body-lg max-w-2xl">
               {description}
             </p>
           ) : null}

@@ -1,0 +1,67 @@
+/* Desk / admin density — glass top bar patterns */
+
+.rf-app-shell {
+  min-height: 100dvh;
+  background: var(--rf-bg-primary);
+}
+
+.rf-desk-main {
+  flex: 1;
+  width: 100%;
+}
+
+.rf-desk-content {
+  margin-inline: auto;
+  width: min(100%, var(--rf-measure-wide));
+  padding-inline: var(--rf-gutter-mobile);
+  padding-block: var(--rf-space-6);
+}
+
+@media (min-width: 768px) {
+  .rf-desk-content {
+    padding-inline: var(--rf-gutter-desktop);
+    padding-block: var(--rf-space-8);
+  }
+}
+
+.rf-admin-sidebar {
+  border: 1px solid var(--rf-line-strong);
+  background: var(--rf-bg-primary);
+  border-radius: var(--rf-radius-panel);
+  padding: var(--rf-space-4);
+  box-shadow: var(--rf-shadow-e1);
+}
+
+@media (min-width: 1024px) {
+  .rf-admin-sidebar.rf-glass-l2 {
+    background: var(--rf-glass);
+    border-color: var(--rf-glass-border);
+    box-shadow: var(--rf-glass-shadow-l2);
+  }
+}
+
+.rf-nav-pill {
+  display: flex;
+  align-items: center;
+  gap: var(--rf-space-2);
+  min-height: 44px;
+  padding: 0 var(--rf-space-3);
+  border-radius: var(--rf-radius-control);
+  font-size: var(--rf-type-ui);
+  font-weight: 500;
+  color: var(--rf-muted);
+  text-decoration: none;
+  transition:
+    color var(--rf-duration-ui) var(--rf-ease-out),
+    background-color var(--rf-duration-ui) var(--rf-ease-out);
+}
+
+.rf-nav-pill:hover {
+  color: var(--rf-ink);
+  background: color-mix(in oklab, var(--rf-accent-soft) 40%, transparent);
+}
+
+.rf-nav-pill[data-active="true"] {
+  color: var(--rf-ink);
+  background: color-mix(in oklab, var(--rf-accent) 10%, transparent);
+}

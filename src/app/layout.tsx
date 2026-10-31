@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { IBM_Plex_Mono, Outfit } from "next/font/google";
 import { Suspense } from "react";
 import "./globals.css";
 
@@ -7,14 +7,15 @@ import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { getSiteUrl } from "@/lib/site/url";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const outfit = Outfit({
+  variable: "--font-outfit",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const ibmPlexMono = IBM_Plex_Mono({
+  variable: "--font-ibm-plex-mono",
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
 });
 
 const siteUrl = getSiteUrl();
@@ -42,11 +43,15 @@ export const metadata: Metadata = {
 
 function SiteHeaderFallback() {
   return (
-    <header className="border-border bg-background/95 sticky top-0 z-50 border-b">
-      <div className="mx-auto flex h-14 max-w-7xl items-center px-4 sm:px-6">
-        <span className="font-semibold tracking-tight">Brightloop</span>
-      </div>
-    </header>
+    <>
+      <header className="m-header">
+        <div className="m-header__fade" aria-hidden />
+        <div className="m-container m-header__bar">
+          <span className="m-wordmark">brightloop</span>
+        </div>
+      </header>
+      <div className="m-header-spacer" aria-hidden />
+    </>
   );
 }
 
@@ -54,9 +59,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${outfit.variable} ${ibmPlexMono.variable} h-full antialiased`}
     >
-      <body className="bg-muted/30 flex min-h-full flex-col">
+      <body className="rf-app-shell flex min-h-full flex-col">
         <Suspense fallback={<SiteHeaderFallback />}>
           <SiteHeader />
         </Suspense>

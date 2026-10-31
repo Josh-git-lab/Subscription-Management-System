@@ -14,17 +14,18 @@ export function MainNavLink({
 }) {
   const pathname = usePathname();
   const active =
-    href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
+    href === "/"
+      ? pathname === "/"
+      : pathname === href || pathname.startsWith(`${href}/`);
 
   return (
     <Link
       href={href}
       aria-current={active ? "page" : undefined}
+      data-active={active ? "true" : "false"}
       className={cn(
-        "focus-visible:ring-ring rounded-md px-2 py-1 text-sm font-medium transition-colors focus-visible:ring-3 focus-visible:outline-none",
-        active
-          ? "bg-muted text-foreground"
-          : "text-muted-foreground hover:text-foreground",
+        "rf-nav-pill min-h-[44px]",
+        active && "text-foreground",
       )}
     >
       {children}

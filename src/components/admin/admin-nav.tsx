@@ -23,9 +23,9 @@ export function AdminNav({ role }: { role?: string }) {
   return (
     <nav
       aria-label="Admin console"
-      className="flex flex-row gap-1 overflow-x-auto pb-2 lg:w-52 lg:shrink-0 lg:flex-col lg:overflow-visible lg:pb-0 lg:pr-4"
+      className="rf-admin-sidebar rf-glass-l2 flex flex-row gap-1 overflow-x-auto lg:w-56 lg:shrink-0 lg:flex-col lg:overflow-visible"
     >
-      <p className="text-muted-foreground mb-2 hidden text-xs font-semibold tracking-wide uppercase lg:block">
+      <p className="text-muted-foreground rf-type-meta mb-2 hidden tracking-wide uppercase lg:block">
         Console
       </p>
       {links
@@ -37,12 +37,8 @@ export function AdminNav({ role }: { role?: string }) {
             key={href}
             href={href}
             aria-current={active ? "page" : undefined}
-            className={cn(
-              "focus-visible:ring-ring rounded-lg px-3 py-2 text-sm font-medium whitespace-nowrap transition-colors focus-visible:ring-3 focus-visible:outline-none",
-              active
-                ? "bg-primary text-primary-foreground"
-                : "text-muted-foreground hover:bg-muted hover:text-foreground",
-            )}
+            data-active={active ? "true" : "false"}
+            className={cn("rf-nav-pill whitespace-nowrap", active && "font-semibold")}
           >
             {label}
           </Link>

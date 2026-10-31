@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Check } from "lucide-react";
+import { Check } from "@phosphor-icons/react/dist/ssr";
 
 import { auth } from "@/auth";
 import { PageShell } from "@/components/page-shell";
@@ -79,7 +79,7 @@ export default async function PlansPage() {
                   <CardDescription>{plan.description}</CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-1 flex-col gap-4">
-                  <p className="text-3xl font-semibold tracking-tight">
+                  <p className="rf-mono-value text-3xl font-semibold tracking-tight">
                     {formatInrFromMinor(plan.priceMinor, plan.currency)}
                     <span className="text-muted-foreground text-base font-normal">
                       /{plan.interval.toLowerCase()}
@@ -90,6 +90,7 @@ export default async function PlansPage() {
                       <li key={feature} className="flex gap-2">
                         <Check
                           className="text-primary mt-0.5 size-4 shrink-0"
+                          weight="regular"
                           aria-hidden
                         />
                         <span>{feature}</span>

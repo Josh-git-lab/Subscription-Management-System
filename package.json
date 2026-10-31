@@ -25,6 +25,7 @@
     "@base-ui/react": "^1.9.0",
     "@node-rs/argon2": "^2.2.2",
     "@panva/hkdf": "^1.2.1",
+    "@phosphor-icons/react": "^2.1.10",
     "@prisma/client": "^6.19.0",
     "@types/bcryptjs": "^2.4.6",
     "bcryptjs": "^3.0.3",

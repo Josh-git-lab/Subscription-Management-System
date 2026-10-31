@@ -20,7 +20,7 @@ export default async function AdminLayout({
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-4 px-4 py-6 sm:px-6 lg:flex-row lg:gap-8 lg:py-8">
+    <div className="rf-desk-content mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 lg:flex-row lg:gap-8">
       <AdminNav role={session.user.role} />
       <div className="min-w-0 flex-1">{children}</div>
     </div>

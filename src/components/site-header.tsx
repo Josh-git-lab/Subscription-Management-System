@@ -1,10 +1,12 @@
-import Link from "next/link";
-
 import { logoutAction } from "@/actions/auth";
 import { auth } from "@/auth";
 import { MainNavLink } from "@/components/main-nav-link";
-import { Button } from "@/components/ui/button";
+import { GlassButton } from "@/components/marketing/glass-button";
+import { LogoChip } from "@/components/marketing/logo-chip";
+import { MarketingContainer } from "@/components/marketing/container";
+import { PrimaryButton } from "@/components/marketing/primary-button";
 import { isCustomer, isStaffOrAdmin } from "@/lib/auth/roles";
+import { cn } from "@/lib/utils";
 
 export async function SiteHeader() {
   const session = await auth();
@@ -12,22 +14,17 @@ export async function SiteHeader() {
   const customer = isCustomer(session?.user?.role);
 
   return (
-    <header className="border-border bg-background/95 sticky top-0 z-50 border-b backdrop-blur">
-      <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-        <div className="flex flex-wrap items-center gap-x-1 gap-y-2">
-          <Link
-            href="/"
-            className="text-foreground mr-3 flex items-center gap-2 text-base font-semibold tracking-tight focus-visible:ring-ring focus-visible:ring-3 focus-visible:outline-none"
+    <>
+      <header className="m-header">
+        <div className="m-header__fade" aria-hidden />
+        <MarketingContainer className="m-header__bar">
+          <div className="m-header__start">
+            <LogoChip href="/" />
+          </div>
+          <nav
+            className="m-header__center hidden min-w-0 flex-wrap items-center justify-center gap-1 md:flex"
+            aria-label="Main"
           >
-            <span
-              className="bg-primary text-primary-foreground flex size-8 items-center justify-center rounded-lg text-xs font-bold"
-              aria-hidden
-            >
-              B
-            </span>
-            Brightloop
-          </Link>
-          <nav className="flex flex-wrap items-center gap-1" aria-label="Main">
             <MainNavLink href="/plans">Plans</MainNavLink>
             {customer ? (
               <>
@@ -39,38 +36,54 @@ export async function SiteHeader() {
               <MainNavLink href="/admin/dashboard">Console</MainNavLink>
             ) : null}
           </nav>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          {session?.user ? (
-            <>
-              <span className="text-muted-foreground hidden max-w-[12rem] truncate text-sm sm:inline">
-                {session.user.email}
-              </span>
-              <span className="bg-muted text-muted-foreground rounded-md px-2 py-0.5 text-xs font-medium">
-                {session.user.role}
-              </span>
-              <form action={logoutAction}>
-                <Button type="submit" variant="outline" size="sm">
-                  Log out
-                </Button>
-              </form>
-            </>
-          ) : (
-            <>
-              <Link href="/login">
-                <Button type="button" variant="outline" size="sm">
+          <div className="m-header__actions">
+            {session?.user ? (
+              <>
+                <span className="text-muted-foreground hidden max-w-[12rem] truncate text-sm lg:inline">
+                  {session.user.email}
+                </span>
+                <span className="rf-type-meta bg-secondary text-muted-foreground rounded-md px-2 py-1">
+                  {session.user.role}
+                </span>
+                <form action={logoutAction}>
+                  <button
+                    type="submit"
+                    className={cn(
+                      "btn-glass glass-control min-h-[44px] px-4",
+                      "rf-type-ui cursor-pointer",
+                    )}
+                  >
+                    Log out
+                  </button>
+                </form>
+              </>
+            ) : (
+              <>
+                <GlassButton reflective href="/login" className="m-header__learn">
                   Log in
-                </Button>
-              </Link>
-              <Link href="/register">
-                <Button type="button" size="sm">
+                </GlassButton>
+                <PrimaryButton href="/register" className="m-header__download">
                   Register
-                </Button>
-              </Link>
-            </>
-          )}
-        </div>
-      </div>
-    </header>
+                </PrimaryButton>
+              </>
+            )}
+            {!session?.user ? (
+              <GlassButton reflective href="/plans" className="m-header__menu md:hidden">
+                <span className="m-header__menu-icon" aria-hidden>
+                  <span />
+                  <span />
+                </span>
+                Plans
+              </GlassButton>
+            ) : (
+              <GlassButton reflective href="/plans" className="m-header__menu md:hidden">
+                Menu
+              </GlassButton>
+            )}
+          </div>
+        </MarketingContainer>
+      </header>
+      <div className="m-header-spacer" aria-hidden />
+    </>
   );
 }
