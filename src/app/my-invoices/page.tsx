@@ -7,6 +7,8 @@ import { InvoiceStatusBadge } from "@/components/status-badge";
 import { prisma } from "@/lib/db/prisma";
 import { formatInrFromMinor } from "@/lib/money/format-inr";
 
+export const instant = false;
+
 export const metadata: Metadata = {
   title: "My invoices",
   robots: { index: false },

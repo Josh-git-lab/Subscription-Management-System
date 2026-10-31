@@ -16,6 +16,8 @@ npm run dev
 
 Dev uses `next dev --webpack` (recommended on Windows paths with spaces).
 
+`npm run build` runs `prisma generate`, then `next build --webpack`. Generate reads `DATABASE_URL` and does not open a connection. The datasource provider is SQLite, so that URL must start with `file:`. A hosted Postgres URL fails generate until the provider is changed.
+
 ## Seed accounts (passwords only via env)
 
 | Role     | Email                     | Env var                 |

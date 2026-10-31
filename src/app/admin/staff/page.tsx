@@ -7,6 +7,8 @@ import { CreateStaffForm } from "@/components/create-staff-form";
 import { PageShell } from "@/components/page-shell";
 import { prisma } from "@/lib/db/prisma";
 
+export const instant = false;
+
 export const metadata: Metadata = {
   title: "Staff",
   robots: { index: false },

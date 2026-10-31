@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Suspense } from "react";
 import "./globals.css";
 
 import { SiteFooter } from "@/components/site-footer";
@@ -39,6 +40,16 @@ export const metadata: Metadata = {
   },
 };
 
+function SiteHeaderFallback() {
+  return (
+    <header className="border-border bg-background/95 sticky top-0 z-50 border-b">
+      <div className="mx-auto flex h-14 max-w-7xl items-center px-4 sm:px-6">
+        <span className="font-semibold tracking-tight">Brightloop</span>
+      </div>
+    </header>
+  );
+}
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
@@ -46,7 +57,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="bg-muted/30 flex min-h-full flex-col">
-        <SiteHeader />
+        <Suspense fallback={<SiteHeaderFallback />}>
+          <SiteHeader />
+        </Suspense>
         {children}
         <SiteFooter />
       </body>

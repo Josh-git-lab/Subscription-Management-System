@@ -14,6 +14,8 @@ import { Label } from "@/components/ui/label";
 import { isStaffOrAdmin } from "@/lib/auth/roles";
 import { prisma } from "@/lib/db/prisma";
 
+export const instant = false;
+
 export const metadata: Metadata = {
   title: "All subscriptions",
   robots: { index: false },

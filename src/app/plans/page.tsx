@@ -19,6 +19,8 @@ import { formatInrFromMinor } from "@/lib/money/format-inr";
 import { featuresForPlanSlug } from "@/lib/plans/feature-bullets";
 import { getSiteUrl } from "@/lib/site/url";
 
+export const instant = false;
+
 export const metadata: Metadata = {
   title: "Subscription plans",
   description:

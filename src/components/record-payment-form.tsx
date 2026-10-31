@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 
 import { recordPaymentAction } from "@/actions/payments";
 import { Button } from "@/components/ui/button";
@@ -24,7 +24,12 @@ export function RecordPaymentForm({
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState("");
+  const [paidOn, setPaidOn] = useState("");
   const maxRupees = maxMinor / 100;
+
+  useEffect(() => {
+    setPaidOn(new Date().toISOString().slice(0, 10));
+  }, []);
 
   return (
     <form
@@ -44,14 +49,14 @@ export function RecordPaymentForm({
           return;
         }
         const method = String(fd.get("method") ?? "");
-        const paidOn = String(fd.get("paidOn") ?? "");
+        const paidOnValue = String(fd.get("paidOn") ?? "");
         const note = String(fd.get("note") ?? "");
         startTransition(async () => {
           const result = await recordPaymentAction({
             invoiceId,
             amountMinor,
             method,
-            paidOn,
+            paidOn: paidOnValue,
             note: note || undefined,
           });
           if (result.error) {
@@ -88,7 +93,8 @@ export function RecordPaymentForm({
         name="paidOn"
         type="date"
         required
-        defaultValue={new Date().toISOString().slice(0, 10)}
+        value={paidOn}
+        onChange={(event) => setPaidOn(event.target.value)}
       />
       <Label htmlFor={`note-${invoiceId}`} className="text-xs">
         Note

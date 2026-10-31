@@ -3,6 +3,8 @@ import Link from "next/link";
 
 import { ResetPasswordForm } from "@/components/reset-password-form";
 
+export const instant = false;
+
 export const metadata: Metadata = {
   title: "Reset password",
   robots: { index: false },

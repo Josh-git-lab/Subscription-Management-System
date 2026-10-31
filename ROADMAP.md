@@ -28,7 +28,7 @@ One Next.js app at **repo root** (`src/`, single `package.json`) for Brightloop 
 
 ## Detours log
 
-(See git history; includes P0 deps fix, UI polish, quote-to-cash pack, git push `d3ee685`, step 8 `TBD` in git)
+- 2026-10-31: Production build fix (post step 8). `favicon.ico` is a file; Windows `readlink` returns EISDIR for normal files. Build runs `prisma generate` then Next with a readlink shim. Pages that read the database, session, or search params set `instant = false`. Header session is behind Suspense. `DATABASE_URL` must be set for generate and must be a `file:` URL while the provider is sqlite.
 
 ## Backlog
 

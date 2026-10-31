@@ -6,6 +6,8 @@ import { BillingRulesForms } from "@/components/billing-rules-forms";
 import { PageShell } from "@/components/page-shell";
 import { prisma } from "@/lib/db/prisma";
 
+export const instant = false;
+
 export const metadata: Metadata = {
   title: "Billing rules",
   robots: { index: false },

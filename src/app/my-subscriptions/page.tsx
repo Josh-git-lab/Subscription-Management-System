@@ -18,6 +18,8 @@ import {
 import { formatInrFromMinor } from "@/lib/money/format-inr";
 import { prisma } from "@/lib/db/prisma";
 
+export const instant = false;
+
 export const metadata: Metadata = {
   title: "My subscriptions",
   robots: { index: false },

@@ -18,6 +18,8 @@ import { isStaffOrAdmin } from "@/lib/auth/roles";
 import { prisma } from "@/lib/db/prisma";
 import { formatInrFromMinor } from "@/lib/money/format-inr";
 
+export const instant = false;
+
 export const metadata: Metadata = {
   title: "Invoices",
   robots: { index: false },
