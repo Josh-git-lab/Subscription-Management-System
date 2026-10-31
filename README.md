@@ -2,6 +2,23 @@
 
 Fictional **Brightloop Software** console: plan catalog, customer subscriptions, idempotent invoice billing, and role-based admin/staff tools. Single Next.js app (App Router), Prisma + **PostgreSQL**, Auth.js credentials, Zod-validated server actions.
 
+## Live demo (for interviews)
+
+**App:** [https://brightloop-odoo-mumble.vercel.app](https://brightloop-odoo-mumble.vercel.app)  
+**Log in:** [https://brightloop-odoo-mumble.vercel.app/login](https://brightloop-odoo-mumble.vercel.app/login)
+
+These accounts are seeded in the **production** Postgres database (demo only — not for real users):
+
+| Role | Email | Password | After login |
+|------|--------|----------|-------------|
+| **Admin** | `admin@gmail.com` | `admin1234` | `/admin/dashboard` (full console + billing rules) |
+| **Staff** | `staff@brightloop.local` | `StaffTest!234` | `/admin/dashboard` (no Staff admin-only pages) |
+| **Customer** | `customer@brightloop.local` | `CustomerTest!234` | `/plans` → subscribe, `/my-subscriptions`, `/my-invoices` |
+
+Quick path for reviewers: log in as **Admin** → open **Console** → **Invoices** → **Run billing** → **Record payment** on an invoice. Plans are public at `/plans` (Basic, Pro, Team).
+
+To re-seed production with the same passwords, set `SEED_ADMIN_PASSWORD=admin1234`, `SEED_STAFF_PASSWORD=StaffTest!234`, and `SEED_CUSTOMER_PASSWORD=CustomerTest!234` when running `npm run db:seed` locally against the production `DATABASE_URL`.
+
 ## Setup (local)
 
 Use a Postgres database (Neon free tier, Supabase, or Docker Postgres).
@@ -27,15 +44,17 @@ docker run --name brightloop-pg -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=bri
 # DATABASE_URL=postgresql://postgres:postgres@localhost:5432/brightloop
 ```
 
-## Seed accounts (passwords only via env)
+## Seed accounts (local)
 
-| Role     | Email                     | Env var                 |
-|----------|---------------------------|-------------------------|
-| Admin    | `admin@gmail.com`         | `SEED_ADMIN_PASSWORD`   |
-| Staff    | `staff@brightloop.local`  | `SEED_STAFF_PASSWORD`   |
-| Customer | `customer@brightloop.local` | `SEED_CUSTOMER_PASSWORD` |
+Use the same emails as production; passwords come from env when you run `npm run db:seed`:
 
-Never commit `.env` or real passwords. Seed refuses to run when `NODE_ENV=production` (run seed from your machine against the production URL instead).
+| Role     | Email                     | Env var                 | Suggested demo value (matches production seed) |
+|----------|---------------------------|-------------------------|-----------------------------------------------|
+| Admin    | `admin@gmail.com`         | `SEED_ADMIN_PASSWORD`   | `admin1234`                                   |
+| Staff    | `staff@brightloop.local`  | `SEED_STAFF_PASSWORD`   | `StaffTest!234`                               |
+| Customer | `customer@brightloop.local` | `SEED_CUSTOMER_PASSWORD` | `CustomerTest!234`                          |
+
+Never commit `.env`. Seed refuses to run when `NODE_ENV=production` (run seed from your machine against the production `DATABASE_URL` instead).
 
 ## Vercel production database
 
