@@ -1,11 +1,11 @@
-// Postgres-compatible types; SQLite for local dev.
+// PostgreSQL for local dev and production (Neon, Supabase, Docker, etc.).
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 

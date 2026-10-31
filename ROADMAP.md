@@ -6,7 +6,7 @@ Current step: 8 (DONE — thin review pass)
 
 ## Project summary (do not lose this)
 
-One Next.js app at **repo root** (`src/`, single `package.json`) for Brightloop Software: accounts, plans, subscribe, billing runs, invoice payments, admin/staff views. **Prisma at repo-root `prisma/`**. Stack: SQLite dev, Auth.js credentials (JWT), bcryptjs, Zod, Tailwind + shadcn/ui, Vitest. Money as integer minor units. Secrets in env only.
+One Next.js app at **repo root** (`src/`, single `package.json`) for Brightloop Software: accounts, plans, subscribe, billing runs, invoice payments, admin/staff views. **Prisma at repo-root `prisma/`**. Stack: PostgreSQL (Neon/Supabase/Docker), Auth.js credentials (JWT), bcryptjs, Zod, Tailwind + shadcn/ui, Vitest. Money as integer minor units. Secrets in env only.
 
 ## Demo spine — SHIPPED
 
@@ -28,7 +28,8 @@ One Next.js app at **repo root** (`src/`, single `package.json`) for Brightloop 
 
 ## Detours log
 
-- 2026-10-31: Production build fix (post step 8). `favicon.ico` is a file; Windows `readlink` returns EISDIR for normal files. Build runs `prisma generate` then Next with a readlink shim. Pages that read the database, session, or search params set `instant = false`. Header session is behind Suspense. `DATABASE_URL` must be set for generate and must be a `file:` URL while the provider is sqlite.
+- 2026-10-31: Production build fix (post step 8). Windows readlink shim; `instant = false` on dynamic pages.
+- 2026-10-31: Production DB detour — Prisma `postgresql`; fresh migration `20261031143000_init_postgres`; `db:migrate:deploy`; Vercel needs real Postgres URL + migrate deploy + seed from local.
 
 ## Backlog
 
@@ -41,6 +42,6 @@ One Next.js app at **repo root** (`src/`, single `package.json`) for Brightloop 
 ## Decisions
 
 - **Git:** `origin` → `Josh-git-lab/Subscription-Management-System`; demo commit on `main`.
-- **Prisma:** `prisma/` at repo root; `*.db` gitignored.
+- **Prisma:** `prisma/` at repo root; PostgreSQL; `*.db` gitignored for legacy local files.
 - **Dev/build:** `--webpack` on Windows path with spaces.
 - **Seed:** `admin@gmail.com`, `staff@brightloop.local`, `customer@brightloop.local`; passwords from `SEED_*_PASSWORD` only.

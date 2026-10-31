@@ -1,13 +1,15 @@
 # Brightloop Subscription Management (demo)
 
-Fictional **Brightloop Software** console: plan catalog, customer subscriptions, idempotent invoice billing, and role-based admin/staff tools. Single Next.js app (App Router), Prisma + SQLite, Auth.js credentials, Zod-validated server actions.
+Fictional **Brightloop Software** console: plan catalog, customer subscriptions, idempotent invoice billing, and role-based admin/staff tools. Single Next.js app (App Router), Prisma + **PostgreSQL**, Auth.js credentials, Zod-validated server actions.
 
-## Setup
+## Setup (local)
+
+Use a Postgres database (Neon free tier, Supabase, or Docker Postgres).
 
 ```powershell
 cd "e:\Projects\Subscription Management System"
 copy .env.example .env
-# Set: AUTH_SECRET, DATABASE_URL, SITE_URL (HTTPS in prod), SEED_* passwords
+# Set: AUTH_SECRET, DATABASE_URL (postgresql://...), SITE_URL, SEED_* passwords
 npm install --legacy-peer-deps
 npm run db:migrate
 npm run db:seed
@@ -16,7 +18,14 @@ npm run dev
 
 Dev uses `next dev --webpack` (recommended on Windows paths with spaces).
 
-`npm run build` runs `prisma generate`, then `next build --webpack`. Generate reads `DATABASE_URL` and does not open a connection. The datasource provider is SQLite, so that URL must start with `file:`. A hosted Postgres URL fails generate until the provider is changed.
+`npm run build` runs `prisma generate`, then `next build --webpack`. `DATABASE_URL` must be set (Postgres connection string); generate does not open a connection.
+
+### Docker Postgres (optional)
+
+```powershell
+docker run --name brightloop-pg -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=brightloop -p 5432:5432 -d postgres:16
+# DATABASE_URL=postgresql://postgres:postgres@localhost:5432/brightloop
+```
 
 ## Seed accounts (passwords only via env)
 
@@ -26,7 +35,36 @@ Dev uses `next dev --webpack` (recommended on Windows paths with spaces).
 | Staff    | `staff@brightloop.local`  | `SEED_STAFF_PASSWORD`   |
 | Customer | `customer@brightloop.local` | `SEED_CUSTOMER_PASSWORD` |
 
-Never commit `.env` or real passwords. Seed refuses to run when `NODE_ENV=production`.
+Never commit `.env` or real passwords. Seed refuses to run when `NODE_ENV=production` (run seed from your machine against the production URL instead).
+
+## Vercel production database
+
+1. Create a Postgres database (Vercel Storage → Neon, or Supabase) and copy the **`postgresql://`** connection string.
+2. In the Vercel project **Environment Variables** (Production + Preview), set:
+
+   | Variable | Notes |
+   |----------|--------|
+   | `DATABASE_URL` | Postgres URL with `?sslmode=require` if your host requires TLS |
+   | `SITE_URL` | `https://brightloop-odoo-mumble.vercel.app` |
+   | `AUTH_SECRET` | Random secret (e.g. `openssl rand -base64 32`) |
+   | `SEED_ADMIN_PASSWORD` | Only for one-time seed from your laptop (optional on Vercel) |
+   | `SEED_STAFF_PASSWORD` | Same |
+   | `SEED_CUSTOMER_PASSWORD` | Same |
+
+3. From your machine (not on Vercel), apply schema and seed the **same** database:
+
+```powershell
+$env:DATABASE_URL = "postgresql://..."   # production Neon/Supabase URL
+npm run db:migrate:deploy
+$env:SEED_ADMIN_PASSWORD = "..."
+$env:SEED_STAFF_PASSWORD = "..."
+$env:SEED_CUSTOMER_PASSWORD = "..."
+npm run db:seed
+```
+
+4. Redeploy or wait for the latest deployment. Open `/plans` — you should see **Basic**, **Pro**, and **Team**.
+
+Do not store seed passwords in Vercel unless you need to re-seed from CI; prefer running seed locally with env vars set in the shell only.
 
 ## 3-minute demo script
 
@@ -51,6 +89,8 @@ Never commit `.env` or real passwords. Seed refuses to run when `NODE_ENV=produc
 | `npm run lint` | ESLint               |
 | `npm run typecheck` | `tsc --noEmit`  |
 | `npm run test` | Vitest               |
-| `npm run db:*` | Prisma migrate/seed  |
+| `npm run db:migrate` | Dev migrations (`migrate dev`) |
+| `npm run db:migrate:deploy` | Apply migrations (production / CI) |
+| `npm run db:seed` | Seed plans + demo users |
 
 See `ROADMAP.md` for plan history and detours.
