@@ -5,6 +5,7 @@ import {
 } from "@phosphor-icons/react/dist/ssr";
 
 import { AmbientBackground } from "@/components/landing/ambient-background";
+import { HeroSky } from "@/components/landing/hero-sky";
 import { GlassButton } from "@/components/marketing/glass-button";
 import { MarketingContainer } from "@/components/marketing/container";
 import { PrimaryButton } from "@/components/marketing/primary-button";
@@ -15,7 +16,9 @@ export function LandingHome() {
       <AmbientBackground />
       <main className="m-main">
         <section className="m-hero rf-env-atmosphere" id="top">
-          <div className="m-hero__sky" aria-hidden />
+          <div className="m-hero__sky" aria-hidden>
+            <HeroSky />
+          </div>
           <MarketingContainer>
             <p className="m-hero__chip">Brightloop Software</p>
             <h1 id="hero-heading" className="m-hero__title rf-type-display">

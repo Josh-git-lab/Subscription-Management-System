@@ -3,7 +3,8 @@
 
 .m-header,
 .m-footer,
-.m-header-spacer {
+.m-header-spacer,
+.m-landing-shell {
   --color-page: #f7f8fa;
   --color-surface: #ffffff;
   --color-ink: #0e0f12;
@@ -14,8 +15,8 @@
   --color-glass-border: rgba(15, 23, 42, 0.06);
   --color-focus-ring: rgb(59, 130, 246);
 
-  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --font-logo: "Satoshi", "Manrope", "Plus Jakarta Sans", Inter, sans-serif;
+  --font-sans: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+  --font-logo: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
   --weight-logo: 800;
   --tracking-logo: -0.025em;
 
@@ -27,7 +28,7 @@
 
   --space-4: 16px;
   --space-8: 32px;
-  --size-control-header: 40px;
+  --size-control-header: 44px;
   --content-pricing-grid: 1152px;
 
   --header-height: 80px;
@@ -236,6 +237,7 @@
   place-items: center;
   width: 44px;
   height: 44px;
+  min-height: 44px;
   border-radius: var(--radius-pill);
   text-decoration: none;
   flex: none;
@@ -247,6 +249,19 @@
   transition:
     box-shadow var(--duration-ui),
     transform var(--duration-ui);
+}
+
+.m-logo-chip--wordmark {
+  display: inline-flex;
+  width: auto;
+  min-width: 44px;
+  height: 44px;
+  padding-inline: 14px;
+}
+
+.m-logo-chip--wordmark .m-wordmark {
+  font-size: 1rem;
+  color: var(--color-logo);
 }
 
 .m-logo-chip:hover {
@@ -286,7 +301,8 @@
 }
 
 .m-header .btn-primary,
-.m-footer .btn-primary {
+.m-footer .btn-primary,
+.m-landing-shell .btn-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -311,22 +327,26 @@
 }
 
 .m-header .btn-primary:hover,
-.m-footer .btn-primary:hover {
+.m-footer .btn-primary:hover,
+.m-landing-shell .btn-primary:hover {
   opacity: var(--opacity-primary-hover);
 }
 
 .m-header .btn-primary:active,
-.m-footer .btn-primary:active {
+.m-footer .btn-primary:active,
+.m-landing-shell .btn-primary:active {
   box-shadow: var(--neumorphic-pressed);
   transform: translateY(1px);
 }
 
 .m-header .btn-glass,
-.m-footer .btn-glass {
+.m-footer .btn-glass,
+.m-landing-shell .btn-glass {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-4);
+  min-height: 44px;
   min-height: var(--size-control-header);
   padding: 0 var(--space-4);
   border-radius: var(--radius-pill);
@@ -339,7 +359,8 @@
 }
 
 .m-header .glass-reflective,
-.m-footer .glass-reflective {
+.m-footer .glass-reflective,
+.m-landing-shell .glass-reflective {
   position: relative;
   isolation: isolate;
   overflow: hidden;
@@ -359,7 +380,8 @@
 }
 
 .m-header .glass-reflective::before,
-.m-footer .glass-reflective::before {
+.m-footer .glass-reflective::before,
+.m-landing-shell .glass-reflective::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -369,7 +391,8 @@
 }
 
 .m-header .glass-reflective::after,
-.m-footer .glass-reflective::after {
+.m-footer .glass-reflective::after,
+.m-landing-shell .glass-reflective::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -379,18 +402,21 @@
 }
 
 .m-header .glass-reflective:hover,
-.m-footer .glass-reflective:hover {
+.m-footer .glass-reflective:hover,
+.m-landing-shell .glass-reflective:hover {
   box-shadow: var(--shadow-glass-reflect-hover);
 }
 
 .m-header .btn-glass.glass-reflective > *,
-.m-footer .btn-glass.glass-reflective > * {
+.m-footer .btn-glass.glass-reflective > *,
+.m-landing-shell .btn-glass.glass-reflective > * {
   position: relative;
   z-index: 1;
 }
 
 .m-header .glass-control,
-.m-footer .glass-control {
+.m-footer .glass-control,
+.m-landing-shell .glass-control {
   background: var(--glass-elevated-fill);
   border: var(--border-width-hairline) solid var(--glass-elevated-border);
   box-shadow: var(--shadow-glass-elevated);
@@ -403,7 +429,8 @@
 }
 
 .m-header .glass-control:hover,
-.m-footer .glass-control:hover {
+.m-footer .glass-control:hover,
+.m-landing-shell .glass-control:hover {
   background: var(--glass-active-fill);
   box-shadow: var(--neumorphic-raised);
 }

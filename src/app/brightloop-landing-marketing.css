@@ -253,14 +253,14 @@
 
 .m-landing-shell .m-hero__sky {
   position: absolute;
-  top: calc(var(--header-height) * -1);
+  top: calc(var(--header-height) * -2);
   right: 0;
   bottom: 0;
   left: 0;
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
-  background: transparent;
+  background: linear-gradient(180deg, #3876ba 0%, #8cbfe8 100%);
 }
 
 .m-landing-shell .m-hero__sky > * {
@@ -323,11 +323,11 @@
   margin-bottom: var(--space-7);
   padding: 6px 14px;
   border-radius: var(--radius-pill);
-  background: color-mix(in oklab, var(--sidebar-accent) 55%, white);
-  border: 1px solid var(--rf-line);
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.28);
   font-size: var(--text-chip);
   font-weight: 500;
-  color: var(--rf-ink-soft);
+  color: rgba(247, 248, 250, 0.92);
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
@@ -340,7 +340,8 @@
   font-weight: 600;
   letter-spacing: var(--tracking-display);
   line-height: var(--leading-display);
-  color: var(--rf-ink);
+  color: #f7f8fa;
+  text-shadow: 0 1px 18px rgba(12, 40, 80, 0.35);
   text-wrap: balance;
 }
 
@@ -350,7 +351,8 @@
   font-family: var(--font-outfit), var(--font-sans);
   font-size: var(--text-body-lead);
   line-height: var(--leading-lead);
-  color: var(--rf-muted);
+  color: rgba(247, 248, 250, 0.88);
+  text-shadow: 0 1px 12px rgba(12, 40, 80, 0.28);
 }
 
 .m-landing-shell .m-hero__actions {
