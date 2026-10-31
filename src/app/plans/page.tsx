@@ -20,8 +20,9 @@ import { featuresForPlanSlug } from "@/lib/plans/feature-bullets";
 import { getSiteUrl } from "@/lib/site/url";
 
 export const metadata: Metadata = {
-  title: "Plans",
-  description: "Browse Brightloop subscription plans.",
+  title: "Subscription plans",
+  description:
+    "Compare Brightloop Basic, Pro, and Team plans. Prices in INR; subscribe instantly in the demo.",
   alternates: { canonical: "/plans" },
   openGraph: {
     url: `${getSiteUrl()}/plans`,

@@ -136,8 +136,8 @@ export async function forgotPasswordAction(
       },
     });
     if (process.env.NODE_ENV !== "production") {
-      const origin = "http://localhost:3000";
-      const link = `${origin}/reset-password?token=${token.raw}`;
+      const { getSiteUrl } = await import("@/lib/site/url");
+      const link = `${getSiteUrl()}/reset-password?token=${token.raw}`;
       console.info(`[mail:log] Password reset for ${email}: ${link}`);
     }
   }

@@ -1,40 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Brightloop Subscription Management (demo)
 
-## Subscription lifecycle
+Fictional **Brightloop Software** console: plan catalog, customer subscriptions, idempotent invoice billing, and role-based admin/staff tools. Single Next.js app (App Router), Prisma + SQLite, Auth.js credentials, Zod-validated server actions.
 
-Customer self-serve **Subscribe** creates an **ACTIVE** subscription immediately (demo, no quotation step). Staff and admins can still walk a subscription **Draft → Quotation → Confirmed → Active** from the admin subscriptions table. Each subscription gets a number such as `SUB-000001`. Billing is idempotent per subscription period: a second run for the same period creates 0 invoices.
+## Setup
 
-## Getting Started
-
-First, run the development server:
-
-```bash
+```powershell
+cd "e:\Projects\Subscription Management System"
+copy .env.example .env
+# Set: AUTH_SECRET, DATABASE_URL, SITE_URL (HTTPS in prod), SEED_* passwords
+npm install --legacy-peer-deps
+npm run db:migrate
+npm run db:seed
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Dev uses `next dev --webpack` (recommended on Windows paths with spaces).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Seed accounts (passwords only via env)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Role     | Email                     | Env var                 |
+|----------|---------------------------|-------------------------|
+| Admin    | `admin@gmail.com`         | `SEED_ADMIN_PASSWORD`   |
+| Staff    | `staff@brightloop.local`  | `SEED_STAFF_PASSWORD`   |
+| Customer | `customer@brightloop.local` | `SEED_CUSTOMER_PASSWORD` |
 
-## Learn More
+Never commit `.env` or real passwords. Seed refuses to run when `NODE_ENV=production`.
 
-To learn more about Next.js, take a look at the following resources:
+## 3-minute demo script
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. **Customer** — Log in → `/plans` → **Subscribe** on a plan → `/my-subscriptions` (ACTIVE) → optional **Cancel** (CLOSED).
+2. **Admin or staff** — Log in → `/admin/invoices` → **Run billing** (note count) → run again (**0** new invoices for same period) → **Record payment** until invoice **PAID**.
+3. **Dashboard** — `/admin/dashboard`: active subscriptions, outstanding (minor units), overdue count. Optionally `/admin/subscriptions` (search/filter) and `/admin/settings` (tax/discount rules).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Known gaps vs a full quote-to-cash PDF spec
 
-## Deploy on Vercel
+- No real payment gateway or emailed invoices (reset links log to console in dev only).
+- No MFA for admin; in-memory rate limits (not Redis).
+- Product catalog / variant UI not built; tax & discount are **settings + invoice math**, not merchandising workflows.
+- `og:image`, Search Console, and production hardening (CSP tighten, audit) deferred.
+- Windows: prefer a repo path **without spaces**; use webpack dev/build flags documented in `ROADMAP.md`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Scripts
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Command        | Purpose              |
+|----------------|----------------------|
+| `npm run dev`  | Dev server (webpack) |
+| `npm run build`| Production build     |
+| `npm run lint` | ESLint               |
+| `npm run typecheck` | `tsc --noEmit`  |
+| `npm run test` | Vitest               |
+| `npm run db:*` | Prisma migrate/seed  |
+
+See `ROADMAP.md` for plan history and detours.

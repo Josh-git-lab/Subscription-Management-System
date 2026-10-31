@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { CopyrightYear } from "@/components/copyright-year";
+
 export function SiteFooter() {
   return (
     <footer className="border-border bg-background mt-auto border-t">
@@ -36,7 +38,7 @@ export function SiteFooter() {
         </nav>
       </div>
       <div className="border-border text-muted-foreground border-t px-4 py-4 text-center text-xs sm:px-6">
-        © {new Date().getFullYear()} Brightloop Software. Demo application.
+        © <CopyrightYear /> Brightloop Software. Demo application.
       </div>
     </footer>
   );

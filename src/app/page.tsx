@@ -1,4 +1,20 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+
+import { getSiteUrl } from "@/lib/site/url";
+
+export const metadata: Metadata = {
+  title: "Subscription billing without spreadsheets",
+  description:
+    "Brightloop Software helps teams sell plans, manage subscriptions, and run invoice billing from one console.",
+  alternates: { canonical: "/" },
+  openGraph: {
+    url: getSiteUrl(),
+    title: "Brightloop Software — Subscription billing",
+    description:
+      "Sell plans, manage subscriptions, and run invoice billing from one console.",
+  },
+};
 import { LayoutGrid, Receipt, Users } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
