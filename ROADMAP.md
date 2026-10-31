@@ -30,6 +30,7 @@ One Next.js app at **repo root** (`src/`, single `package.json`) for Brightloop 
 
 - 2026-10-31: Production build fix (post step 8). Windows readlink shim; `instant = false` on dynamic pages.
 - 2026-10-31: Production DB detour — Prisma `postgresql`; fresh migration `20261031143000_init_postgres`; `db:migrate:deploy`; Vercel needs real Postgres URL + migrate deploy + seed from local.
+- 2026-10-31: Vercel production ops — Supabase DB password reset; `DATABASE_URL` → transaction pooler (+ `pgbouncer`/`sslmode`); redeploy `dpl_DGVN88MwaK4Rru17UN31aUGg1CcG`; live `/plans` shows Basic, Pro, Team on `https://brightloop-odoo-mumble.vercel.app`.
 
 ## Backlog
 
