@@ -1,0 +1,846 @@
+---
+description: Global Security + SEO Engineering Rule (mandatory for every task)
+alwaysApply: true
+---
+
+# GLOBAL SECURITY + SEO ENGINEERING RULE
+
+You are working on a production application. **Security, correctness, accessibility, SEO, performance, and existing functionality must be treated as first-class engineering requirements.**
+
+These rules apply to **every project, feature, component, endpoint, API, database operation, authentication flow, page, route, user-facing input, uploaded file, and configuration change** you create or modify.
+
+Do not treat these as optional recommendations. **Follow them by default.**
+
+---
+
+# 1. SECURITY — SECURE BY DEFAULT
+
+Assume every request, user, client, input, file, token, cookie, database record, and external service is potentially untrusted.
+
+Security checks must be enforced **server-side**, never only in the frontend.
+
+## Authentication & Authorization
+
+* Never implement authentication as a simple username/password comparison.
+* Use secure password hashing such as **Argon2id, bcrypt, or an established framework implementation**.
+* Enforce strong password requirements appropriate to the application.
+* Support and prefer **MFA/2FA** for sensitive accounts and operations.
+* Never trust frontend authentication or authorization checks.
+* Perform authorization checks server-side on **every protected endpoint**.
+* Verify that the authenticated user has permission to access, create, update, or delete the requested resource.
+* Never rely on hidden frontend routes, disabled buttons, or client-side checks for security.
+* Protect login, signup, password reset, OTP, token refresh, and other authentication endpoints against abuse.
+* Prevent user/account enumeration wherever applicable.
+* Use established authentication/session libraries instead of custom cryptography.
+
+## Rate Limiting & Abuse Prevention
+
+Apply server-side rate limiting to:
+
+* Login
+* Signup
+* Password reset
+* OTP generation/verification
+* Token refresh
+* Sensitive API endpoints
+* Expensive operations
+* File uploads
+* Search endpoints where abuse is possible
+* Any endpoint that can be automated for abuse
+
+Use appropriate `429 Too Many Requests` responses.
+
+For distributed deployments, prefer a shared store such as Redis rather than process-local counters.
+
+Consider:
+
+* IP
+* Account/user identity
+* Device/session
+* Endpoint
+* Authentication state
+
+Do not implement rate limiting exclusively in frontend code.
+
+---
+
+# 2. SECRETS & SENSITIVE DATA
+
+**NEVER hardcode:**
+
+* API keys
+* Passwords
+* Access tokens
+* Refresh tokens
+* JWT secrets
+* Private keys
+* Database credentials
+* Encryption keys
+* OAuth secrets
+* Service credentials
+
+Use environment variables or an appropriate secret-management system.
+
+Ensure appropriate secret files such as `.env` are excluded from Git.
+
+Before modifying code:
+
+**Check for accidentally hardcoded credentials or sensitive configuration.**
+
+If an existing secret is discovered:
+
+1. Clearly identify that a secret was exposed.
+2. Recommend immediate rotation/revocation.
+3. Remove it from source code/history where appropriate.
+4. Do not simply move an already-compromised secret into `.env` and consider the problem solved.
+
+Never expose server-side secrets to frontend/client-side code.
+
+Never log:
+
+* Passwords
+* Authentication tokens
+* API keys
+* Session IDs
+* Private keys
+* Sensitive personal information
+
+---
+
+# 3. INPUT VALIDATION & SANITIZATION
+
+Treat **ALL external input as untrusted**.
+
+Validate server-side:
+
+* Request bodies
+* Query parameters
+* Path parameters
+* Headers
+* Cookies
+* Form data
+* Uploaded files
+* User-generated content
+
+Validate:
+
+* Type
+* Format
+* Length
+* Range
+* Required/optional status
+* Allowed values
+* Content type
+* File size
+* File extension
+* File content where applicable
+
+Prefer **allowlists** over blocklists whenever practical.
+
+Prevent:
+
+* SQL injection
+* NoSQL injection
+* XSS
+* Command injection
+* Path traversal
+* SSRF
+* Unsafe deserialization
+* Prototype pollution where relevant
+
+Use parameterized queries or safe ORM APIs.
+
+Never execute shell commands using untrusted user input.
+
+Never assume frontend validation is sufficient.
+
+---
+
+# 4. API & BACKEND SECURITY
+
+Every protected API endpoint must explicitly enforce:
+
+1. Authentication
+2. Authorization
+3. Input validation
+4. Rate limiting where appropriate
+5. Appropriate error handling
+
+Use correct HTTP methods and status codes.
+
+Do not expose:
+
+* Password hashes
+* Tokens
+* Internal credentials
+* Private database fields
+* Stack traces
+* Internal filesystem paths
+* Internal implementation details
+* Unnecessary user information
+
+Return only the data the caller actually needs.
+
+Never expose raw database errors to users.
+
+Validate:
+
+* Content-Type
+* Request size
+* Request structure
+* Allowed methods
+
+Add appropriate security headers.
+
+Production applications must use HTTPS/TLS for sensitive communication.
+
+Configure CORS explicitly.
+
+**Never use `Access-Control-Allow-Origin: *` together with credentials.**
+
+---
+
+# 5. PASSWORDS, TOKENS & SESSIONS
+
+* Never store plaintext passwords.
+* Never put sensitive authentication tokens in URLs.
+* Use short-lived, appropriately scoped tokens where appropriate.
+* Use secure session mechanisms.
+* When cookies are used for authentication, use appropriate:
+
+  * `HttpOnly`
+  * `Secure`
+  * `SameSite`
+    settings.
+* Invalidate/revoke sessions when required.
+* Handle password changes securely.
+* Protect password reset and OTP flows against enumeration, replay, brute force, and abuse.
+* Never log passwords or authentication tokens.
+* Do not unnecessarily expose session identifiers to JavaScript.
+
+---
+
+# 6. DATABASE SECURITY
+
+* Use parameterized queries or safe ORM APIs.
+* Use least-privilege database credentials.
+* Perform authorization checks before database reads, updates, and deletes.
+* Prevent IDOR/BOLA vulnerabilities.
+* Explicitly define writable fields.
+* Never blindly spread request bodies into database updates.
+* Prevent mass-assignment vulnerabilities.
+* Never expose raw database errors.
+* Do not return unnecessary database fields.
+* Never expose secrets stored in the database.
+* Validate IDs and other database selectors server-side.
+
+---
+
+# 7. FILE UPLOAD SECURITY
+
+If the application accepts uploads:
+
+* Validate file size.
+* Validate extension.
+* Validate MIME/content type.
+* Inspect file content where appropriate.
+* Do not trust the filename supplied by the user.
+* Generate safe server-side filenames.
+* Prevent path traversal.
+* Store uploads outside executable directories where appropriate.
+* Restrict allowed file types using an allowlist.
+* Prevent malicious files from being executed.
+* Apply appropriate storage permissions.
+* Rate-limit upload endpoints.
+* Do not expose internal filesystem paths.
+
+---
+
+# 8. CSRF, XSS & BROWSER SECURITY
+
+Protect state-changing authenticated requests against CSRF where applicable.
+
+Prevent XSS by:
+
+* Proper output encoding
+* Safe templating
+* Avoiding unsafe HTML injection
+* Sanitizing user-generated HTML when HTML is intentionally supported
+* Avoiding unnecessary `dangerouslySetInnerHTML` or equivalent APIs
+
+Use appropriate security headers where relevant, including:
+
+* Content-Security-Policy
+* X-Content-Type-Options
+* Referrer-Policy
+* Permissions-Policy
+* Strict-Transport-Security in production HTTPS environments
+* Appropriate frame protections
+
+Do not introduce security headers blindly if they break legitimate application functionality. Configure them according to the application's actual architecture.
+
+---
+
+# 9. SEO — TECHNICAL SEO MUST BE BUILT IN
+
+Every public-facing page must be SEO-friendly by default.
+
+## Indexing
+
+Add appropriate:
+
+* `<title>`
+* Meta description
+* Canonical URL
+* Robots directives where necessary
+* Open Graph metadata
+* Twitter/X metadata where appropriate
+
+Pages that should not appear in search engines must use appropriate `noindex` controls.
+
+Do not accidentally `noindex` legitimate public pages.
+
+---
+
+# 10. PAGE TITLES
+
+Every indexable page must have a unique, descriptive `<title>`.
+
+Titles should:
+
+* Clearly describe the page.
+* Be human-readable.
+* Avoid keyword stuffing.
+* Be different between meaningful pages.
+* Match the actual page content.
+
+Do not leave default framework titles such as:
+
+`Create Next App`
+
+or equivalent placeholders in production.
+
+---
+
+# 11. META DESCRIPTIONS
+
+Every important indexable page should have a unique, useful meta description.
+
+Descriptions should:
+
+* Accurately describe the page.
+* Be written for humans.
+* Avoid keyword stuffing.
+* Encourage useful search-result context.
+* Not be duplicated unnecessarily across pages.
+
+---
+
+# 12. CANONICAL TAGS
+
+Add canonical URLs to indexable pages where appropriate.
+
+Canonical URLs must:
+
+* Use the correct production domain.
+* Use HTTPS.
+* Avoid accidental duplicate URLs.
+* Reflect the preferred version of the page.
+
+Do not generate incorrect canonicals from development URLs, localhost, query parameters, or temporary domains.
+
+---
+
+# 13. URL STRUCTURE
+
+Use clean, readable URL slugs.
+
+Prefer:
+
+`/products/ai-assistant`
+
+over:
+
+`/page?id=12345`
+
+Avoid:
+
+* Unnecessary query parameters
+* Random IDs when human-readable slugs are appropriate
+* Excessive nesting
+* Duplicate URL variations
+* Trailing-slash inconsistencies
+* Unnecessary capitalization
+
+Existing URL structures should not be changed blindly if doing so would break indexed URLs. Use redirects when restructuring URLs.
+
+---
+
+# 14. INTERNAL LINKING
+
+Create meaningful internal links between related pages.
+
+Internal links should:
+
+* Use descriptive anchor text.
+* Help users navigate the site.
+* Help search engines understand site structure.
+* Avoid excessive or artificial linking.
+* Never link to broken or irrelevant pages.
+
+Important pages should be reachable through internal navigation.
+
+---
+
+# 15. SITEMAP.XML
+
+Build and maintain a valid:
+
+`/sitemap.xml`
+
+The sitemap should contain:
+
+* Canonical public URLs
+* Indexable pages
+* Correct HTTPS URLs
+* Production URLs only
+
+Do not include:
+
+* `noindex` pages
+* Authentication pages
+* Private dashboards
+* Admin pages
+* Duplicate URLs
+* Broken URLs
+* Development URLs
+
+Update the sitemap when public routes change.
+
+---
+
+# 16. ROBOTS.TXT
+
+Build and maintain:
+
+`/robots.txt`
+
+Use it to communicate appropriate crawling rules.
+
+Do not accidentally block:
+
+* Important public pages
+* CSS/JS resources required for rendering
+* Legitimate public content
+
+Do not use `robots.txt` as a substitute for `noindex` when the goal is to prevent indexing.
+
+Ensure the sitemap URL is referenced appropriately.
+
+---
+
+# 17. OPEN GRAPH & SOCIAL SHARING
+
+Add an appropriate:
+
+`og:image`
+
+Also configure relevant Open Graph metadata such as:
+
+* `og:title`
+* `og:description`
+* `og:type`
+* `og:url`
+* `og:image`
+
+Ensure the image:
+
+* Exists
+* Uses the production URL
+* Has appropriate dimensions
+* Loads successfully
+* Represents the actual site/page
+
+Where appropriate, add Twitter/X card metadata.
+
+---
+
+# 18. IMAGE SEO & PERFORMANCE
+
+Every meaningful image must have appropriate `alt` text.
+
+Alt text should:
+
+* Describe the image's purpose/content.
+* Be concise.
+* Avoid keyword stuffing.
+* Be empty (`alt=""`) for purely decorative images where appropriate.
+
+Optimize images for performance.
+
+Use:
+
+* Modern image formats where supported
+* Appropriate dimensions
+* Responsive images
+* Lazy loading for below-the-fold images
+* Eager loading/preloading only where justified
+
+Do not sacrifice image quality unnecessarily.
+
+---
+
+# 19. CORE WEB VITALS & PERFORMANCE
+
+Optimize for:
+
+* LCP
+* INP
+* CLS
+
+Also consider:
+
+* TTFB
+* JavaScript bundle size
+* CSS size
+* Image size
+* Font loading
+* Third-party scripts
+* Server response time
+* Unnecessary client-side rendering
+* Layout shifts
+* Unnecessary network requests
+
+Compress images and other appropriate static assets.
+
+Do not introduce unnecessary dependencies or large libraries for simple functionality.
+
+Do not optimize blindly. Preserve functionality while improving measurable performance.
+
+---
+
+# 20. MOBILE RESPONSIVENESS
+
+Every page must work correctly on:
+
+* Mobile
+* Tablet
+* Desktop
+* Different viewport widths
+
+Check for:
+
+* Horizontal overflow
+* Broken navigation
+* Overlapping elements
+* Unreadable text
+* Incorrect spacing
+* Buttons that are difficult to tap
+* Images overflowing containers
+* Fixed elements covering content
+* Broken modals
+* Broken forms
+* Poor keyboard interaction
+
+Use responsive layouts rather than desktop-only assumptions.
+
+---
+
+# 21. HEADER HIERARCHY
+
+Use semantic heading structure.
+
+By default:
+
+* Use **one primary `<h1>` per page**.
+* Use `<h2>` for major sections.
+* Use `<h3>` for subsections.
+* Do not use headings purely for visual styling.
+* Do not skip heading levels unnecessarily.
+
+The `<h1>` must accurately describe the primary purpose of the page.
+
+---
+
+# 22. STRUCTURED DATA / SCHEMA MARKUP
+
+Add appropriate Schema.org structured data where it genuinely applies.
+
+Examples may include:
+
+* Organization
+* WebSite
+* WebPage
+* BreadcrumbList
+* Product
+* Article
+* FAQ
+* LocalBusiness
+* SoftwareApplication
+
+Only use structured data that accurately represents visible/valid page content.
+
+Never add misleading or fake structured data simply to obtain search visibility.
+
+Validate structured data after implementation.
+
+---
+
+# 23. BROKEN LINKS
+
+Regularly check for:
+
+* Broken internal links
+* Broken external links
+* Missing routes
+* Incorrect redirects
+* 404 pages
+* Incorrect canonical URLs
+* Broken images
+* Broken assets
+
+Fix broken internal links immediately where discovered.
+
+When removing or changing an existing public URL, use an appropriate redirect where necessary instead of silently creating a broken link.
+
+---
+
+# 24. HTTPS
+
+Production applications must enforce HTTPS.
+
+Where infrastructure supports it:
+
+* Redirect HTTP → HTTPS.
+* Use secure cookies.
+* Use HSTS appropriately.
+* Ensure canonical URLs use HTTPS.
+* Ensure sitemap URLs use HTTPS.
+* Ensure Open Graph URLs use HTTPS.
+
+Do not hardcode development HTTP URLs into production SEO metadata.
+
+---
+
+# 25. SEARCH CONSOLE
+
+For production sites:
+
+* Verify the site in Google Search Console when possible.
+* Submit the sitemap.
+* Monitor indexing issues.
+* Monitor crawl errors.
+* Check Core Web Vitals.
+* Check mobile usability.
+* Check structured-data issues.
+
+Do not claim Search Console verification has been completed unless it has actually been verified.
+
+---
+
+# 26. BACKLINK STRATEGY
+
+When appropriate for the project, create a legitimate backlink strategy.
+
+Prioritize:
+
+* Relevant industry websites
+* University/project pages
+* Official directories
+* Open-source project pages
+* Developer communities
+* Product launch platforms
+* Relevant publications
+* Partnerships
+* Genuine guest contributions
+* High-quality resource pages
+
+Never use:
+
+* Spam networks
+* Paid manipulative link schemes
+* Automated backlink farms
+* Hidden links
+* Link stuffing
+* Irrelevant mass submissions
+
+Backlinks should be earned through useful content, products, research, partnerships, and legitimate distribution.
+
+---
+
+# 27. ACCESSIBILITY
+
+Build accessibility into every UI change.
+
+Check:
+
+* Semantic HTML
+* Keyboard navigation
+* Visible focus states
+* Form labels
+* Accessible buttons
+* ARIA only where necessary
+* Color contrast
+* Alt text
+* Screen-reader behavior
+* Error messaging
+* Touch target sizes
+* Reduced-motion preferences where appropriate
+
+Do not use accessibility attributes as a substitute for proper semantic HTML.
+
+---
+
+# 28. EXISTING FUNCTIONALITY MUST NOT BREAK
+
+Before changing authentication, sessions, middleware, APIs, routing, database logic, SEO infrastructure, or UI:
+
+**Understand the existing architecture first.**
+
+Do not blindly restructure the project.
+
+Prefer:
+
+* Minimal changes
+* Established libraries
+* Existing framework conventions
+* Existing project patterns
+* Incremental improvements
+
+Do not introduce unnecessary infrastructure.
+
+Security and SEO improvements must not break legitimate application behavior.
+
+---
+
+# 29. DEPENDENCY SECURITY
+
+When adding or changing dependencies:
+
+* Prefer established, maintained packages.
+* Avoid unnecessary dependencies.
+* Check for known vulnerabilities where tooling is available.
+* Prefer framework-native functionality when appropriate.
+* Do not install packages merely to solve trivial problems.
+* Keep dependencies reasonably up to date.
+
+Do not blindly upgrade major dependencies if it risks breaking the application.
+
+---
+
+# 30. SECURITY + SEO REVIEW BEFORE FINISHING
+
+Before declaring a feature complete, review **all code you changed**.
+
+### Security checklist
+
+* [ ] Hardcoded secrets checked
+* [ ] Authentication checked
+* [ ] Authorization checked
+* [ ] Rate limiting checked
+* [ ] Input validation checked
+* [ ] SQL/NoSQL injection checked
+* [ ] XSS checked
+* [ ] CSRF checked where applicable
+* [ ] IDOR/BOLA checked
+* [ ] Mass assignment checked
+* [ ] Path traversal checked
+* [ ] SSRF checked where applicable
+* [ ] Command injection checked
+* [ ] Unsafe deserialization checked
+* [ ] File upload security checked where applicable
+* [ ] Sensitive logging checked
+* [ ] Error leakage checked
+* [ ] CORS checked
+* [ ] Security headers checked
+* [ ] Session/token security checked
+* [ ] Dependency vulnerabilities checked where detectable
+
+### SEO checklist
+
+* [ ] Correct page title
+* [ ] Meta description
+* [ ] Canonical tag
+* [ ] Correct indexing/noindex behavior
+* [ ] One primary H1
+* [ ] Correct heading hierarchy
+* [ ] Clean URL slug
+* [ ] Internal links
+* [ ] No broken internal links
+* [ ] Image alt text
+* [ ] Optimized/compressed images
+* [ ] Responsive/mobile layout
+* [ ] Core Web Vitals considered
+* [ ] Open Graph metadata
+* [ ] `og:image`
+* [ ] Structured data where appropriate
+* [ ] HTTPS
+* [ ] Sitemap
+* [ ] Robots.txt
+* [ ] Production URLs verified
+* [ ] Search Console considered/verified where applicable
+
+---
+
+# 31. FINAL SECURITY REPORT
+
+For substantial security-related changes, provide a brief report containing:
+
+### 1. Risk addressed
+
+What security problem or attack surface was addressed?
+
+### 2. Changes made
+
+What security controls or implementation changes were introduced?
+
+### 3. Remaining risks
+
+What risks, assumptions, or infrastructure limitations remain?
+
+### 4. Secrets discovered
+
+Were any hardcoded or exposed secrets discovered?
+
+If yes, explicitly state that they should be **rotated/revoked**, not merely moved to environment variables.
+
+### 5. Infrastructure requirements
+
+Identify security improvements that require configuration outside the codebase, such as:
+
+* HTTPS
+* DNS
+* WAF
+* Redis
+* Secret manager
+* Cloud configuration
+* Security headers
+* Search Console
+* CDN configuration
+* Database permissions
+
+---
+
+# 32. IMPLEMENTATION PRINCIPLE
+
+For every task, follow this order:
+
+1. **Understand the existing architecture.**
+2. **Identify security and SEO implications.**
+3. **Implement the smallest maintainable change.**
+4. **Validate all external input server-side.**
+5. **Enforce authentication and authorization server-side.**
+6. **Protect abuse-prone operations with rate limiting.**
+7. **Keep secrets out of source code and client bundles.**
+8. **Preserve existing functionality.**
+9. **Check accessibility, mobile responsiveness, SEO, and performance.**
+10. **Run the security + SEO checklist before finishing.**
+11. **Report remaining risks and assumptions.**
+
+## NON-NEGOTIABLE PRINCIPLE
+
+**Secure by default. SEO by default. Accessible by default. Responsive by default.**
+
+Do not wait for the user to explicitly ask for security, validation, authorization, SEO metadata, accessibility, or performance improvements when they are relevant to the code being changed.
+
+However, do not make unnecessary architectural changes merely to satisfy a checklist. **Use the minimum secure, maintainable implementation that fits the existing application architecture.**

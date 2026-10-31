@@ -1,0 +1,28 @@
+---
+description: Mandatory roadmap protocol. ROADMAP.md is the source of truth; work one step at a time.
+alwaysApply: true
+---
+
+# ROADMAP PROTOCOL
+
+MANDATORY. Applies together with `00-global-security-seo.mdc`, which always wins on conflicts.
+
+1. SOURCE OF TRUTH. `ROADMAP.md` at the repo root is the single source of truth for the project plan and progress. At the start of EVERY chat and before EVERY task, read `ROADMAP.md` and state in one line: "Current step: N, status: X". Never rely on chat memory for the plan.
+
+2. ONE STEP AT A TIME. Work only on the step marked IN PROGRESS. Never build anything from a later step unless I explicitly say so.
+
+3. CUSTOM CHANGES DURING A STEP. When I ask for something while a step is in progress, classify it and log it in `ROADMAP.md` under "Detours log" (date, request, classification, files touched):
+   a) Tweak to the current step: do it, log it.
+   b) Affects a later step (changes a model, route, contract or assumption): do it only if needed now, log it, and update the notes of every affected later step in `ROADMAP.md`.
+   c) New feature outside the plan: do NOT build it. Add it to "Backlog" and tell me. Build it only after I slot it into a step.
+   After any detour, return to the roadmap: say which step we are still on and what remains in it. Detours never change the step order unless I explicitly say "reorder the roadmap".
+
+4. DEFINITION OF DONE. A step is done only when: its checklist items are all ticked, lint + typecheck + relevant tests pass, and the Security + SEO checklist from `00-global-security-seo.mdc` was run on the code changed in that step.
+
+5. COMPLETING A STEP. When a step is done: mark it DONE in `ROADMAP.md` with a completion note, then give a short report (what changed, how to test it, security/SEO checklist result, remaining risks, any secret found), then immediately set the next step to NEXT UP and announce it: "Step N is complete. Next up: Step N+1 - <title>. Say 'go' to start." Do not start the next step until I say go, unless AUTO_ADVANCE below is set to auto.
+
+6. AUTO_ADVANCE setting (stored in `ROADMAP.md`): ask (default) = wait for my "go" before each new step; auto = after a step is DONE and reported, continue to the next step by yourself, but always STOP and ask if anything is ambiguous, risky, or touches security. I can change this setting by telling you.
+
+7. KEEP ROADMAP.md CURRENT. Update it after every meaningful change, not just at the end. If `ROADMAP.md` and the code disagree, tell me before continuing.
+
+8. NEW CHATS. If I start a new chat, the first thing you do is read `ROADMAP.md` and resume exactly where it says, including any unfinished detours.

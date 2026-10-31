@@ -1,0 +1,38 @@
+---
+description: Scope lock. Edit only what the request names; report out-of-scope findings, do not fix them.
+alwaysApply: true
+---
+
+# SCOPE LOCK PROTOCOL
+
+MANDATORY. Applies together with `00-global-security-seo.mdc` and `01-roadmap-protocol.mdc`.
+
+1. THE REQUEST IS THE BOUNDARY. Edit only what the request names or directly requires. Example: "change the spelling of prize to price" changes only the intended occurrences of that word. Do not fix, improve, rename, reformat, reorder, simplify, optimize, comment, or clean up any other line, even if it is wrong, inefficient, insecure, or ugly.
+
+2. NO COLLATERAL EDITS. Forbidden unless the request asks for them:
+   - reformatting, re-indenting, import reordering, whitespace or line-ending changes, or running a formatter or linter `--fix` on a file
+   - refactors, renames, moving code between files, extracting functions
+   - dependency additions, upgrades, or removals, and config changes
+   - changing tests, types, comments, or docs the request did not mention
+   - touching generated files or lockfiles unless the request requires it
+   Make the smallest diff that fulfils the request. Leave untouched lines byte-for-byte identical.
+
+3. SEARCH AND REPLACE SAFETY. Before a bulk change, search first and show the matches (file, line, snippet). Separate whole-word matches from substrings (for example "prize" inside "prized" or a variable name). If the match set is larger than about 5, or any match is ambiguous (user-facing text vs identifier vs database column vs URL vs API field), list them and ask before editing. Never rename database columns, API fields, route paths, or public URLs as a side effect of a text fix. Ask first.
+
+4. THE DETECTOR (separate from the request). Problems noticed outside the request (bugs, security issues, inefficiency, broken links, accessibility or SEO gaps, outdated patterns, style problems) are not edited. After the request is finished, add a section "Detector: suggestions (nothing changed)" with each finding as:
+   - ID (D1, D2, ...)
+   - Where (file:line)
+   - What and why it matters
+   - Severity (critical / important / minor)
+   - Proposed fix (one or two lines)
+   Then ask which IDs to apply. Apply only approved IDs, as a separate follow-up, each as its own small diff. No response means declined. "Later" means add the finding to the Backlog in `ROADMAP.md`.
+
+5. CRITICAL FINDINGS. An exposed secret, an authentication or authorization hole, or a data-loss risk is reported immediately at the top of the reply, before anything else. Still do not edit it without confirmation. For secrets, say they must be rotated, not only moved to `.env`.
+
+6. PRECEDENCE. The security and SEO rule still applies to lines changed for the request: those lines must not introduce a vulnerability or regression. It does not authorize editing other lines. Anything it would require elsewhere goes through the Detector (section 4). The roadmap protocol still applies: log the request in `ROADMAP.md` as usual, and do not start later steps.
+
+7. AMBIGUOUS OR LARGER THAN IT LOOKS. If fulfilling the request would force edits beyond what was described (the fix breaks a type, a test, or another file), stop and ask. State exactly which additional lines are needed and why, then wait.
+
+8. PRE-EDIT AND POST-EDIT CHECK. Before editing, state in one line what will change and in which files. After editing, show the diff summary (files, lines changed) and confirm: "No other lines were modified." If anything unrelated changed (formatter, auto-import, tool side effects), revert it and say so.
+
+9. NEVER SILENTLY WIDEN SCOPE. Any "while I was there" change is a violation. When in doubt, do less and ask.
